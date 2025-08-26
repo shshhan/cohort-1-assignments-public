@@ -15,7 +15,10 @@ contract MiniAMM is IMiniAMM, IMiniAMMEvents {
     address public tokenY;
 
     // implement constructor
-    constructor(address _tokenX, address _tokenY) {}
+    constructor(address _tokenX, address _tokenY) {
+        tokenX = _tokenX;
+        tokenY = _tokenY;
+    }
 
     // add parameters and implement function.
     // this function will determine the initial 'k'.
