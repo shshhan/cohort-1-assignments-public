@@ -16,6 +16,9 @@ contract MiniAMM is IMiniAMM, IMiniAMMEvents {
 
     // implement constructor
     constructor(address _tokenX, address _tokenY) {
+        require(_tokenX != address(0), "tokenX cannot be zero address");
+        require(_tokenY != address(0), "tokenY cannot be zero address");
+
         if (_tokenX < _tokenY) {
             tokenX = _tokenX;
             tokenY = _tokenY;
