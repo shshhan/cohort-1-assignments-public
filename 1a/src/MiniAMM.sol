@@ -62,8 +62,32 @@ contract MiniAMM is IMiniAMM, IMiniAMMEvents {
             // add params
             _addLiquidityNotFirstTime(_xAmountIn, _yAmountIn);
         }
+        
+        emit AddLiquidity(_xAmountIn, _yAmountIn);
     }
 
     // complete the function
-    function swap(uint256 xAmountIn, uint256 yAmountIn) external {}
+    function swap(uint256 _xAmountIn, uint256 _yAmountIn) external {
+        require(k > 0, "No liquidity in pool");
+        require(_xAmountIn == 0 || _yAmountIn == 0, "Can only swap one direction at a time");
+        require(_xAmountIn + _yAmountIn != 0, "Must swap at least one token");
+        if (_xAmountIn != 0) {
+            require(xReserve >= _xAmountIn, "Insufficient liquidity");
+            uint ySwap = yReserve - (k / (xReserve + _xAmountIn));
+            IERC20(tokenX).transferFrom(msg.sender, address(this), _xAmountIn);
+            IERC20(tokenY).transfer(msg.sender, ySwap);
+            xReserve += _xAmountIn;
+            yReserve -= ySwap;
+            emit Swap(_xAmountIn, ySwap);
+
+        } else {
+            require(yReserve >= _yAmountIn, "Insufficient liquidity");
+            uint xSwap = xReserve - (k / (yReserve + _yAmountIn));
+            IERC20(tokenY).transferFrom(msg.sender, address(this), _yAmountIn);
+            IERC20(tokenX).transfer(msg.sender, xSwap);
+            xReserve -= xSwap;
+            yReserve += _yAmountIn;
+            emit Swap(xSwap, _yAmountIn);
+        }
+    }
 }
