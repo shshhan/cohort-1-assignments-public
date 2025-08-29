@@ -15,5 +15,7 @@ contract MockERC20 is ERC20, IMockERC20 {
     }
 
     // Implement
-    function freeMintToSender(uint256 amount) external {}
+    function freeMintToSender(uint256 amount) external {
+        _mint(msg.sender, amount);
+    }
 }
