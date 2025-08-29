@@ -31,21 +31,36 @@ contract MiniAMM is IMiniAMM, IMiniAMMEvents {
 
     // add parameters and implement function.
     // this function will determine the initial 'k'.
-    function _addLiquidityFirstTime() internal {}
+    function _addLiquidityFirstTime(uint256 _xAmountIn, uint256 _yAmountIn) internal {
+        xReserve = _xAmountIn;
+        yReserve = _yAmountIn;
+        k = xReserve * yReserve;
+    }
 
     // add parameters and implement function.
     // this function will increase the 'k'
     // because it is transferring liquidity from users to this contract.
-    function _addLiquidityNotFirstTime() internal {}
+    function _addLiquidityNotFirstTime(uint256 _xAmountIn, uint256 _yAmountIn) internal {
+        require(_yAmountIn == _xAmountIn * yReserve / xReserve);
+        xReserve += _xAmountIn;
+        yReserve += _yAmountIn;
+        k = xReserve * yReserve;
+    }
 
     // complete the function
-    function addLiquidity(uint256 xAmountIn, uint256 yAmountIn) external {
+    function addLiquidity(uint256 _xAmountIn, uint256 _yAmountIn) external {
+        require(_xAmountIn != 0, "Amounts must be greater than 0");
+        require(_yAmountIn != 0, "Amounts must be greater than 0");
+        // Transfer tokens from user to this contract
+        IERC20(tokenX).transferFrom(msg.sender, address(this), _xAmountIn);
+        IERC20(tokenY).transferFrom(msg.sender, address(this), _yAmountIn);
+        
         if (k == 0) {
             // add params
-            _addLiquidityFirstTime();
+            _addLiquidityFirstTime(_xAmountIn, _yAmountIn);
         } else {
             // add params
-            _addLiquidityNotFirstTime();
+            _addLiquidityNotFirstTime(_xAmountIn, _yAmountIn);
         }
     }
 
