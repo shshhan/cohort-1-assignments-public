@@ -10,6 +10,7 @@ services:
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile
     depends_on:
       - geth
+      - graph-node
     networks:
       - geth-network
   sc-deployer:
@@ -85,15 +86,62 @@ services:
       - geth
     networks:
       - geth-network
-  # graph-ipfs:
-  # graph-postgres:
-  # graph-redis:
-  # graph-node:
+  # Graph stack services
+  graph-ipfs:
+    image: ipfs/kubo:latest
+    container_name: graph-ipfs
+    command: daemon --migrate=true --agent-version-suffix=docker
+    volumes:
+      - graph-ipfs-data:/data/ipfs
+    networks:
+      - geth-network
+
+  graph-postgres:
+    image: postgres:14-alpine
+    container_name: graph-postgres
+    environment:
+      POSTGRES_USER: graph
+      POSTGRES_PASSWORD: graph
+      POSTGRES_DB: graph
+      POSTGRES_INITDB_ARGS: "--locale=C --encoding=UTF8"
+    volumes:
+      - graph-postgres-data:/var/lib/postgresql/data
+    networks:
+      - geth-network
+
+  graph-redis:
+    image: redis:7-alpine
+    container_name: graph-redis
+    networks:
+      - geth-network
+
+  graph-node:
+    image: graphprotocol/graph-node:latest
+    container_name: graph-node
+    depends_on:
+      - graph-postgres
+      - graph-redis
+      - graph-ipfs
+      - geth
+    environment:
+      GRAPH_LOG: info
+      RUST_LOG: info
+      postgres_host: graph-postgres
+      postgres_user: graph
+      postgres_pass: graph
+      postgres_db: graph
+      ipfs: http://graph-ipfs:5001
+      redis: redis://graph-redis:6379
+      ethereum: local:http://geth:8545
+    networks:
+      - geth-network
 
   # blockscout: should be another docker-compose.yml file from https://github.com/blockscout/blockscout/tree/master/docker-compose. Don't create a container in this file.
 
 volumes:
   geth-data:
+  graph-postgres-data:
+  graph-ipfs-data:
 
 networks:
   geth-network:
