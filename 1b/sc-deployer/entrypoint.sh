@@ -19,7 +19,7 @@ rm -rf /workspace/cohort-1-assignments-public
 cd /workspace
 
 echo "📥 Cloning repository..."
-git clone https://github.com/9oelm/cohort-1-assignments-public.git
+git clone --branch assignment-1b --single-branch https://github.com/shshhan/cohort-1-assignments-public.git
 cd cohort-1-assignments-public
 
 # Navigate to the 1a directory
