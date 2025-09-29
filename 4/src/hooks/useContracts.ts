@@ -5,8 +5,63 @@ import type { MockERC20, MiniAMM } from '@/types/ethers-contracts';
 import { MockERC20__factory, MiniAMM__factory } from '@/types/ethers-contracts/factories';
 import { CONTRACTS } from '@/utils/constants';
 
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+type ChainContracts = {
+  ensRegistry?: { address?: string };
+};
+
+type ChainInfo = {
+  id?: number;
+  name?: string;
+  contracts?: ChainContracts;
+};
+
+type TransportWithUrl = {
+  type?: string;
+  transports?: Array<{ value?: { url?: string } }>;
+  url?: string;
+};
+
+type PublicClientLike = {
+  chain?: ChainInfo;
+  transport?: TransportWithUrl;
+} | null | undefined;
+
+type WalletClientLike = {
+  account?: { address?: string };
+  chain?: ChainInfo;
+  transport?: {
+    value?: unknown;
+    request?: unknown;
+  };
+} | null | undefined;
+
+type RequestCapable = {
+  request: (...args: unknown[]) => Promise<unknown>;
+};
+
+type TransportItemWithUrl = {
+  value?: { url?: string };
+};
+
+type WindowWithEthereum = Window & { ethereum?: unknown };
+
+const hasRequestMethod = (value: unknown): value is RequestCapable => {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'request' in value &&
+    typeof (value as { request?: unknown }).request === 'function'
+  );
+};
+
+const hasUrl = (item: TransportItemWithUrl | undefined): item is { value: { url: string } } => {
+  return typeof item?.value?.url === 'string';
+};
+
 // Wagmi 클라이언트를 ethers.js Provider/Signer로 변환
-function publicClientToProvider(publicClient: any) {
+function publicClientToProvider(publicClient: PublicClientLike) {
   if (!publicClient) return null;
 
   const { chain, transport } = publicClient;
@@ -17,14 +72,14 @@ function publicClientToProvider(publicClient: any) {
   };
 
   try {
-    if (transport?.type === 'fallback' && transport?.transports?.length) {
-      const fallback = transport.transports.find((item: any) => item?.value?.url);
+    if (transport?.type === 'fallback' && transport.transports?.length) {
+      const fallback = transport.transports.find(hasUrl);
       if (fallback?.value?.url) {
         return new ethers.JsonRpcProvider(fallback.value.url, network);
       }
     }
 
-    if (transport?.url) {
+    if (typeof transport?.url === 'string') {
       return new ethers.JsonRpcProvider(transport.url, network);
     }
   } catch (error) {
@@ -34,7 +89,7 @@ function publicClientToProvider(publicClient: any) {
   return null;
 }
 
-async function walletClientToSigner(walletClient: any) {
+async function walletClientToSigner(walletClient: WalletClientLike) {
   if (!walletClient) return null;
 
   const { account, chain } = walletClient;
@@ -44,12 +99,15 @@ async function walletClientToSigner(walletClient: any) {
     ensAddress: chain?.contracts?.ensRegistry?.address,
   };
 
+  const globalEthereum =
+    typeof window !== 'undefined' ? (window as WindowWithEthereum).ethereum : undefined;
+
   const candidateProviders = [
     walletClient?.transport?.value,
     walletClient?.transport,
     walletClient,
-    typeof window !== 'undefined' ? (window as any).ethereum : null,
-  ].filter((provider) => provider?.request);
+    globalEthereum,
+  ].filter(hasRequestMethod);
 
   for (const providerSource of candidateProviders) {
     try {
@@ -77,7 +135,7 @@ export function useTokenContract(address?: string | null): MockERC20 | null {
 
     async function initContract() {
       try {
-        if (!address || address === '0x0000000000000000000000000000000000000000') {
+        if (!address || address === ZERO_ADDRESS) {
           if (!isStale) setContract(null);
           return;
         }
@@ -124,7 +182,7 @@ export function useMiniAMMContract(address: string | undefined = CONTRACTS.MINI_
 
     async function initContract() {
       try {
-        if (!address || address === '0x0000000000000000000000000000000000000000') {
+        if (!address || address === ZERO_ADDRESS) {
           if (!isStale) setContract(null);
           return;
         }

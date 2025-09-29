@@ -6,7 +6,7 @@ import { useMiniAMMContract, useTokenContract } from '@/hooks/useContracts';
 import { usePoolReserves } from '@/hooks/useBalances';
 import { useTransaction } from '@/hooks/useTransaction';
 import { CONTRACTS } from '@/utils/constants';
-import { formatTokenAmount, formatTokenAmountExact, parseTokenAmount } from '@/utils/format';
+import { formatTokenAmountExact, parseTokenAmount } from '@/utils/format';
 import { calculateProportionalAmount } from '@/utils/calculations';
 import { subscribeRefresh } from '@/utils/refreshBus';
 
@@ -35,14 +35,14 @@ export default function AddLiquidity() {
     } catch (error) {
       console.error('Failed to fetch allowances:', error);
     }
-  }, [MINI_AMM, tokenAContract, tokenBContract, userAddress]);
+  }, [tokenAContract, tokenBContract, userAddress]);
 
   useEffect(() => {
     if (!userAddress || !MINI_AMM) return;
     checkAllowances();
     const interval = setInterval(checkAllowances, 5000);
     return () => clearInterval(interval);
-  }, [checkAllowances, userAddress, MINI_AMM]);
+  }, [checkAllowances, userAddress]);
 
   useEffect(() => {
     return subscribeRefresh((topics) => {

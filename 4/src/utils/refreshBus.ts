@@ -12,7 +12,8 @@ export type { RefreshTopic };
 export function emitRefresh(...topics: RefreshTopic[]) {
   if (typeof window === 'undefined') return;
 
-  const uniqueTopics = Array.from(new Set(topics.length ? topics : ['all']));
+  const topicsSet = new Set<RefreshTopic>(topics.length ? topics : ['all']);
+  const uniqueTopics = Array.from(topicsSet);
   const event = new CustomEvent<{ topics: RefreshTopic[] }>(EVENT_NAME, {
     detail: { topics: uniqueTopics },
   });

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { type WriteContractReturnType } from 'wagmi';
 import toast from 'react-hot-toast';
 import { emitRefresh, type RefreshTopic } from '@/utils/refreshBus';
 
@@ -24,7 +23,7 @@ export function useTransaction() {
   });
 
   const execute = useCallback(async (
-    transaction: () => Promise<WriteContractReturnType>,
+    transaction: () => Promise<unknown>,
     options: ExecuteOptions = {}
   ) => {
     setState({ isLoading: true, isSuccess: false, error: null });
@@ -46,11 +45,25 @@ export function useTransaction() {
 
       return tx;
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Transaction failed:', err);
-      const errorMessage = err.shortMessage || err.message || 'An unknown error occurred.';
-      toast.error(errorMessage, { id: toastId });
-      setState({ isLoading: false, isSuccess: false, error: new Error(errorMessage) });
+
+      const shortMessage =
+        typeof err === 'object' && err !== null && 'shortMessage' in err
+          ? (err as { shortMessage?: unknown }).shortMessage
+          : undefined;
+      const message =
+        typeof err === 'object' && err !== null && 'message' in err
+          ? (err as { message?: unknown }).message
+          : undefined;
+
+      const resolvedMessage =
+        (typeof shortMessage === 'string' && shortMessage) ||
+        (typeof message === 'string' && message) ||
+        'An unknown error occurred.';
+
+      toast.error(resolvedMessage, { id: toastId });
+      setState({ isLoading: false, isSuccess: false, error: new Error(resolvedMessage) });
 
       throw err;
     }

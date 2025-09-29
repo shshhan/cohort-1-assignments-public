@@ -12,13 +12,6 @@ interface TokenBalanceProps {
 export default function TokenBalance({ tokenAddress, userAddress, symbol }: TokenBalanceProps) {
   const { balance, isLoading, error } = useTokenBalance(tokenAddress, userAddress);
 
-  const Skeleton = () => (
-    <div className="animate-pulse">
-      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-      <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mt-2"></div>
-    </div>
-  );
-
   return (
     <div className="bg-white dark:bg-gray-800/50 rounded-xl shadow-md p-6">
       <h3 className="text-lg font-semibold text-gray-500 dark:text-gray-400">{symbol} Balance</h3>

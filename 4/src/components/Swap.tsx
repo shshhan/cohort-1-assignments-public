@@ -15,7 +15,7 @@ const { TOKEN_X, TOKEN_Y, MINI_AMM } = CONTRACTS;
 export default function Swap() {
   const { address: userAddress } = useAccount();
   const ammContract = useMiniAMMContract(MINI_AMM);
-  const { reserves, isLoading: reservesLoading, refetch: refetchReserves } = usePoolReserves();
+  const { reserves, refetch: refetchReserves } = usePoolReserves();
   const { isLoading, isSuccess, execute, reset } = useTransaction();
 
   const [tokenAtoB, setTokenAtoB] = useState(true);

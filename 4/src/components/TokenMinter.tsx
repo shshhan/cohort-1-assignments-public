@@ -16,6 +16,20 @@ export default function TokenMinter({ tokenAddress, symbol }: TokenMinterProps) 
   const [amount, setAmount] = useState('');
   const { data: hash, error, isPending, writeContract } = useWriteContract();
 
+  const resolveErrorMessage = (err: unknown): string => {
+    if (typeof err === 'object' && err !== null) {
+      const withShortMessage = err as { shortMessage?: unknown };
+      const withMessage = err as { message?: unknown };
+      if (typeof withShortMessage.shortMessage === 'string' && withShortMessage.shortMessage.length > 0) {
+        return withShortMessage.shortMessage;
+      }
+      if (typeof withMessage.message === 'string' && withMessage.message.length > 0) {
+        return withMessage.message;
+      }
+    }
+    return 'An unknown error occurred.';
+  };
+
   const handleMint = async () => {
     if (!amount) return;
     const amountWei = parseTokenAmount(amount, 18);
@@ -40,7 +54,7 @@ export default function TokenMinter({ tokenAddress, symbol }: TokenMinterProps) 
       emitRefresh('balances');
     }
     if (error) {
-      toast.error(error.shortMessage || error.message);
+      toast.error(resolveErrorMessage(error));
     }
   }, [isConfirmed, error]);
 
