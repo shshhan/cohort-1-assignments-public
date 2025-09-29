@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__serena__list_dir",
+      "mcp__serena__activate_project",
+      "mcp__serena__check_onboarding_performed",
+      "mcp__serena__onboarding",
+      "mcp__serena__get_symbols_overview",
+      "mcp__serena__find_symbol",
+      "mcp__serena__write_memory",
+      "mcp__serena__replace_symbol_body",
+      "mcp__serena__search_for_pattern",
+      "Bash(forge test:*)",
+      "mcp__serena__find_file",
+      "Bash(docker compose:*)",
+      "Bash(docker build:*)",
+      "Bash(docker network:*)",
+      "Bash(docker stop:*)",
+      "Bash(docker rm:*)",
+      "Bash(curl:*)",
+      "mcp__sequential-thinking__sequentialthinking",
+      "Bash(docker kill:*)",
+      "Bash(docker volume prune:*)",
+      "Bash(docker volume:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

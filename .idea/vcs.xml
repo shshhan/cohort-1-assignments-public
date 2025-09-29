@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1a/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1a/lib/openzeppelin-contracts" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1a/lib/openzeppelin-contracts/lib/erc4626-tests" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1a/lib/openzeppelin-contracts/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1a/lib/openzeppelin-contracts/lib/halmos-cheatcodes" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1b/blockscout" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1b/sc-deployer/cohort-1-assignments-public" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1b/sc-deployer/cohort-1-assignments-public/1a/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1b/sc-deployer/cohort-1-assignments-public/1a/lib/openzeppelin-contracts" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1b/sc-deployer/cohort-1-assignments-public/1a/lib/openzeppelin-contracts/lib/erc4626-tests" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1b/sc-deployer/cohort-1-assignments-public/1a/lib/openzeppelin-contracts/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1b/sc-deployer/cohort-1-assignments-public/1a/lib/openzeppelin-contracts/lib/halmos-cheatcodes" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/2/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/2/lib/openzeppelin-contracts" vcs="Git" />
+  </component>
+</project>

@@ -54,7 +54,7 @@ contract MiniAMM is IMiniAMM, IMiniAMMEvents, MiniAMMLP {
     // this function will increase the 'k'
     // because it is transferring liquidity from users to this contract.
     function _addLiquidityNotFirstTime(uint256 xAmountIn, uint256 yAmountIn) internal returns (uint256 lpMinted) {
-        require(yAmountIn == xAmountIn * yReserve / xReserve);
+        require(yAmountIn == xAmountIn * yReserve / xReserve, "ratio not correct");
         return (totalLpMinted * xAmountIn) / xReserve;
     }
 
