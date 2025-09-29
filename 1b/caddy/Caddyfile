@@ -29,6 +29,11 @@
 :80 {
     import cors
     
+    # Blockscout API - MUST come before other routes
+    handle /api/* {
+        reverse_proxy backend:4000
+    }
+    
     handle /deployment* {
         reverse_proxy sc-deployment-server:80
     }
@@ -36,24 +41,24 @@
     # Explorer (Blockscout) under /explorer path
     handle /explorer* {
         uri strip_prefix /explorer
-        reverse_proxy proxy:80
+        reverse_proxy frontend:3000
     }
     
     # Blockscout static resources (needed for subpath routing)
     handle /assets/* {
-        reverse_proxy proxy:80
+        reverse_proxy frontend:3000
     }
     
     handle /_next/* {
-        reverse_proxy proxy:80
+        reverse_proxy frontend:3000
     }
     
     handle /icons/* {
-        reverse_proxy proxy:80
+        reverse_proxy frontend:3000
     }
     
     handle /static/* {
-        reverse_proxy proxy:80
+        reverse_proxy frontend:3000
     }
     
     handle /rpc* {
